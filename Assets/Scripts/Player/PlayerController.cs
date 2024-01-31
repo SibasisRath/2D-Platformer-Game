@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool _isOnGround;
     [SerializeField] private bool _isCelingPresent;
 
+    
+
     public Transform LastCheckPoint { get => lastCheckPoint; set => lastCheckPoint = value; }
 
 
