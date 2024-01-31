@@ -12,6 +12,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] int jumpForce;
     [SerializeField] PlayerScoreManager scoreManager;
+
+    [SerializeField] private LayerMask m_WhatIsGround;       // A mask determining what is ground to the character
+    [SerializeField] private Transform m_GroundCheck;        // A position marking where to check if the player is grounded.
+    [SerializeField] private Transform m_CeilingCheck;		// A position marking where to check for ceilings
+
+    private Transform lastCheckPoint;
+
     // [SerializeField] float crouchSpeed;
     //[SerializeField] int score = 0;
     //[SerializeField] TextMeshProUGUI scoreText;
@@ -24,17 +31,15 @@ public class PlayerController : MonoBehaviour
 
     bool flip;
     bool _isCrouching;
+
+    [SerializeField] bool _canDoubleJump;
+
     [SerializeField] private bool _isOnGround;
     [SerializeField] private bool _isCelingPresent;
- 
 
-    private void Awake()
-    {
+    public Transform LastCheckPoint { get => lastCheckPoint; set => lastCheckPoint = value; }
 
-        flip = false;
-        _isCrouching = false;
-        _isOnGround = false;
-    }
+
     #endregion
     private void Start()
     {
@@ -47,8 +52,13 @@ public class PlayerController : MonoBehaviour
         originalColliderCenter = playerBoxCollider.offset; //for 3d this property will be coliderObject.center
         originalColliderSize = playerBoxCollider.size;
 
-       
 
+
+        flip = false;
+        _isCrouching = false;
+        _isOnGround = false;
+       
+        _canDoubleJump = false;
     }
 
     void FixedUpdate()
@@ -62,43 +72,75 @@ public class PlayerController : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
 
         MovementFunc();
-      
-        Crouch();   
+
+        Crouch();
     }
 
     #region Ground and Celing Check
     void GroundAndCelingCheck()
     {
-        float raycastGroundDistance = 0.2f;
-        float raycastCelingDistance = 2f;
-        //int groundLayerMask = LayerMask.GetMask("Ground");
-        int bitMask = 1 <<10;
+        bool wasGrounded = _isOnGround;
+        _isOnGround = false;
 
-        RaycastHit2D groundHit = Physics2D.Raycast(transform.position, Vector2.down, raycastGroundDistance, bitMask);
+        float groundDistance = 0.2f;
+        float ceilingDistance = 0.2f;
+        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, groundDistance, m_WhatIsGround);
+        
+        for (int i = 0; i < groundColliders.Length; i++)
+        {
+            if (groundColliders[i].gameObject != gameObject)
+            {
+                _isOnGround = true;
+                if (wasGrounded == false)
+                {
+                    SoundManager.Instance.Play(Sounds.PlayerLand);
+                }
+            }
+        }
 
-        RaycastHit2D celingHit = Physics2D.Raycast(transform.position, Vector2.up, raycastCelingDistance, bitMask);
+        if (Physics2D.OverlapCircle(m_CeilingCheck.position, ceilingDistance, m_WhatIsGround))
+        {
+            _isCelingPresent = true;
 
-        _isOnGround = groundHit.collider != null;
-        _isCelingPresent = celingHit.collider != null;
+            //Debug.Log(Physics2D.OverlapCircle(m_CeilingCheck.position, ceilingDistance, m_WhatIsGround).gameObject.name);
+        }
+        else
+        {
+            _isCelingPresent = false;
+        }
+
+      
     }
     #endregion
 
     #region Jump function
     void Jump()
     {
-        
-        if (verticalInput > 0 && _isOnGround)
+        if (_isOnGround)
         {
-            animator.SetTrigger("Jump");
-
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            _canDoubleJump = true;
+            if (verticalInput > 0)
+            {
+                animator.SetTrigger("Jump");
+                SoundManager.Instance.Play(Sounds.PlayerJump);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            }
         }
-        /*else if(_isOnGround)
+        else
         {
-            animator.SetBool("Jump", false);
-        }*/
+            if (_canDoubleJump && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
+            {
+                animator.SetTrigger("Jump");
+                SoundManager.Instance.Play(Sounds.PlayerJump);
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                _canDoubleJump = false;
+            }
+        }
     }
+
     #endregion
+   
+
 
     #region Crouch Function
     void Crouch()
@@ -159,6 +201,7 @@ public class PlayerController : MonoBehaviour
             Vector3 movement = transform.position;
             movement.x += speed * horizontalInput * Time.deltaTime;
             transform.position = movement;
+            //SoundManager.Instance.Play(Sounds.PlayerMove);
         }
     }
     #endregion

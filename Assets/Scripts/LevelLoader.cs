@@ -15,7 +15,8 @@ public class LevelLoader : MonoBehaviour
         currentScene = SceneManager.GetActiveScene().name;
     }
 
-    public void OnRestart() { 
+    public void OnRestart() {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         SceneManager.LoadScene(currentScene);
     }
 
@@ -28,10 +29,12 @@ public class LevelLoader : MonoBehaviour
             case LevelStatus.Completed:
                 
             case LevelStatus.Unlocked:
+                SoundManager.Instance.Play(Sounds.ButtonClick);
                 SceneManager.LoadScene(level);
                 break;
             case LevelStatus.Locked:
                 Debug.Log("This is locked.");
+                SoundManager.Instance.Play(Sounds.LevelLocked);
                 break;
             default:
                 Debug.Log("Something went worng.");

@@ -29,6 +29,7 @@ public class LevelManager : MonoBehaviour
 
     public void OnLevelCompletion(string nextLevelName)
     {
+        SoundManager.Instance.Play(Sounds.LevelComplete);
         Scene currentScene = SceneManager.GetActiveScene();
         setLevelStatus(currentScene.name, LevelStatus.Completed);
         setLevelStatus(nextLevelName, LevelStatus.Unlocked);

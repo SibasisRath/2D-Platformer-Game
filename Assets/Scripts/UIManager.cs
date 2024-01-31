@@ -12,10 +12,22 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button restartBackToMainButton;
     private void Start()
     {
-        nextLevelButton.onClick.AddListener(() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1));
-        restartButton.onClick.AddListener(() => SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex));
-        nextLevelBackToMainButton.onClick.AddListener(() => SceneManager.LoadScene("Lobby"));
-        restartBackToMainButton.onClick.AddListener(() => SceneManager.LoadScene("Lobby"));
+        nextLevelButton.onClick.AddListener(() => {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            SoundManager.Instance.Play(Sounds.ButtonClick);
+        });
+        restartButton.onClick.AddListener(() => { 
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SoundManager.Instance.Play(Sounds.ButtonClick);
+        });
+        nextLevelBackToMainButton.onClick.AddListener(() => {
+            SceneManager.LoadScene("Lobby");
+            SoundManager.Instance.Play(Sounds.ButtonClick);
+        });
+        restartBackToMainButton.onClick.AddListener(() => {
+            SceneManager.LoadScene("Lobby");
+            SoundManager.Instance.Play(Sounds.ButtonClick);
+        });
     }
    
 }

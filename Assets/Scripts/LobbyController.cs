@@ -9,6 +9,7 @@ public class LobbyController : MonoBehaviour
     [SerializeField] private GameObject levelSelection;
     [SerializeField] private Button buttonPlay;
     [SerializeField] private Button buttonQuit;
+    [SerializeField] private Button buttonMain;
 
     [SerializeField] private Button[] levelButtons;
 
@@ -17,8 +18,18 @@ public class LobbyController : MonoBehaviour
     private void Awake()
     {
         levelSelection.SetActive(false);
-        buttonPlay.onClick.AddListener(PlayGame);
-        buttonQuit.onClick.AddListener(QuitGame);
+        buttonPlay.onClick.AddListener(()=> { 
+            SoundManager.Instance.Play(Sounds.ButtonClick);
+            this.PlayGame();
+        });
+        buttonQuit.onClick.AddListener(()=> {
+            SoundManager.Instance.Play(Sounds.ButtonClick);
+            this.QuitGame();
+        });
+        buttonMain.onClick.AddListener(() => {
+            SoundManager.Instance.Play(Sounds.ButtonClick);
+            levelSelection.SetActive(false);
+        });
     }
     private void Start()
     {
@@ -26,7 +37,10 @@ public class LobbyController : MonoBehaviour
 
         foreach (var lButton in levelButtons)
         {
-            lButton.onClick.AddListener(() => LevelLoader.LevelSelector(lButton.gameObject.name));
+            lButton.onClick.AddListener(() => {
+                LevelLoader.LevelSelector(lButton.gameObject.name);
+                SoundManager.Instance.Play(Sounds.ButtonClick);
+            });
 
            /* lButton.interactable = false;
             if (lButton.gameObject.name == "Level1")
