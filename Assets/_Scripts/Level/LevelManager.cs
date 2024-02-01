@@ -45,7 +45,7 @@ public class LevelManager : MonoBehaviour
     }
     public void setLevelStatus(string level, LevelStatus levelStatus) 
     {
-        if (level == "LevelFinish")
+        if (level == "Final")
         {
             Debug.Log("Game ended.");
         }

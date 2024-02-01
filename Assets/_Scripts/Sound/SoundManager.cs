@@ -48,7 +48,11 @@ public class SoundManager : MonoBehaviour
             Debug.Log("Sound clip is not available: " + sName);
             return;
         }
-        s.audioSource.Play();
+        if (!s.audioSource.isPlaying)
+        {
+            s.audioSource.Play();
+        }
+        
 
     }
 

@@ -13,7 +13,7 @@ public class FloatingTileScript : MonoBehaviour
     void Start()
     {
         initialPosition = transform.position;
-        currentPosition = initialPosition;
+        
     }
 
     // Update is called once per frame
@@ -22,8 +22,9 @@ public class FloatingTileScript : MonoBehaviour
         float sinValue = Mathf.Sin(Time.time * speed);
         float targetX = (sinValue + 1) / 2 * range;
 
-        currentPosition.x = targetX;
-        transform.position = currentPosition + initialPosition;
+        currentPosition = initialPosition;
+        currentPosition.x += targetX;
+        transform.position = currentPosition;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

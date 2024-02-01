@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         GroundAndCelingCheck();
-        Jump();
+        
     }
 
     void Update()
@@ -76,6 +76,8 @@ public class PlayerController : MonoBehaviour
         MovementFunc();
 
         Crouch();
+
+        Jump();
     }
 
     #region Ground and Celing Check
@@ -203,7 +205,7 @@ public class PlayerController : MonoBehaviour
             Vector3 movement = transform.position;
             movement.x += speed * horizontalInput * Time.deltaTime;
             transform.position = movement;
-            //SoundManager.Instance.Play(Sounds.PlayerMove);
+            SoundManager.Instance.Play(Sounds.PlayerMove);
         }
     }
     #endregion

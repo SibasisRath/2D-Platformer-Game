@@ -50,5 +50,9 @@ public class EnemyController : MonoBehaviour
             Debug.Log("life loss.");
             collision.gameObject.GetComponent<PlayerLifeLineManager>().UpdateLifeLine();
         }
+        else
+        {
+            Flip();
+        }
     }
 }
