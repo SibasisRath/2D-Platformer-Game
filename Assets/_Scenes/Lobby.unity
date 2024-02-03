@@ -1718,7 +1718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -3125,7 +3125,7 @@ MonoBehaviour:
     loop: 1
     priority: 69
   - name: 1
-    audioClip: {fileID: 8300000, guid: 2a625c226dbe634439b8a636f632d82d, type: 3}
+    audioClip: {fileID: 8300000, guid: 56034eba0ad990b4488c3c1b96b44f56, type: 3}
     audioSource: {fileID: 0}
     volume: 0.492
     pitch: 0.75
@@ -3157,7 +3157,7 @@ MonoBehaviour:
     loop: 0
     priority: 123
   - name: 5
-    audioClip: {fileID: 8300000, guid: f93fc15125f868e4fadb6dd56a7278fd, type: 3}
+    audioClip: {fileID: 8300000, guid: 29544250dd869ee4db8f3a3d4247ddf0, type: 3}
     audioSource: {fileID: 0}
     volume: 0.465
     pitch: 1.31

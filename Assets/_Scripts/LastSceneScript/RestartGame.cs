@@ -6,9 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class RestartGame : MonoBehaviour
 {
+    [SerializeField] private Button button;
     private void Start()
     {
-        this.GetComponent<Button>().onClick.AddListener(() => {
+        button.onClick.AddListener(() => {
             SoundManager.Instance.Play(Sounds.ButtonClick);
             SceneManager.LoadScene(0); });
     }

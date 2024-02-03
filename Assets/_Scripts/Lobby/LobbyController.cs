@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Button))]
 public class LobbyController : MonoBehaviour
@@ -13,62 +14,56 @@ public class LobbyController : MonoBehaviour
 
     [SerializeField] private Button[] levelButtons;
 
-    private GameObject levelManager;
-
     private void Awake()
     {
-        levelSelection.SetActive(false);
-        buttonPlay.onClick.AddListener(()=> { 
-            SoundManager.Instance.Play(Sounds.ButtonClick);
-            this.PlayGame();
-        });
-        buttonQuit.onClick.AddListener(()=> {
-            SoundManager.Instance.Play(Sounds.ButtonClick);
-            this.QuitGame();
-        });
-        buttonMain.onClick.AddListener(() => {
-            SoundManager.Instance.Play(Sounds.ButtonClick);
-            levelSelection.SetActive(false);
-        });
+        SetupButton(buttonPlay, PlayButtonClick);
+        SetupButton(buttonQuit, QuitButtonClick);
+        SetupButton(buttonMain, MainButtonClick);
     }
     private void Start()
     {
-        levelManager = GameObject.Find("LevelManager");
-
-        foreach (var lButton in levelButtons)
+        for (int i = 0; i < levelButtons.Length; i++)
         {
-            lButton.onClick.AddListener(() => {
-                LevelLoader.LevelSelector(lButton.gameObject.name);
-                SoundManager.Instance.Play(Sounds.ButtonClick);
-            });
-
-           /* lButton.interactable = false;
-            if (lButton.gameObject.name == "Level1")
-            {
-                lButton.interactable = true;
-            }
-
-            else
-            {
-                if ((int)LevelManager.Instance.getLevelStatus(lButton.gameObject.name) != 0)
-                {
-                    lButton.interactable = false;
-                }
-                else { lButton.interactable = true; }
-            }
-           */
+            int index = i;
+            SetupButton(levelButtons[i], () => LevelButtonClick(levelButtons[index].gameObject.name));
         }
     }
 
-    private void QuitGame()
+    private void SetupButton(Button button, UnityAction action)
     {
+        if (button != null)
+        {
+            button.onClick.AddListener(() =>
+            {
+                action?.Invoke();
+            });
+        }
+        else
+        {
+            Debug.LogWarning("Button is null. Cannot setup click listener.");
+        }
+    }
+
+    private void QuitButtonClick()
+    {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         Application.Quit();
     }
 
-    private void PlayGame()
+    private void PlayButtonClick()
     {
-        //Level Selection is a parent gameobject acting as a pop-up menu for selecting levels
-        //Buttons for the levels are child of Level Selection.
+        SoundManager.Instance.Play(Sounds.ButtonClick);
         levelSelection.SetActive(true);
+    }
+
+    private void MainButtonClick()
+    {
+        SoundManager.Instance.Play(Sounds.ButtonClick);
+        levelSelection.SetActive(false);
+    }
+
+    private void LevelButtonClick(string levelName)
+    {
+        LevelLoader.LevelSelector(levelName);
     }
 }

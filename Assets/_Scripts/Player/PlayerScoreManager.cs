@@ -6,12 +6,12 @@ using System;
 
 public class PlayerScoreManager : MonoBehaviour
 {
-    [SerializeField] int score = 0;
-    private TextMeshProUGUI m_score;
+    private int score = 0;
+    private TextMeshProUGUI scoreUI;
 
     private void Awake()
     {
-        m_score = GetComponent<TextMeshProUGUI>();
+        scoreUI = GetComponent<TextMeshProUGUI>();
     }
 
     // Start is called before the first frame update
@@ -22,7 +22,7 @@ public class PlayerScoreManager : MonoBehaviour
 
     private void RefreshUI()
     {
-        m_score.text = "Score: " + score;
+        scoreUI.text = "Score: " + score;
     }
 
     public void UpdateScore(int _score) { 

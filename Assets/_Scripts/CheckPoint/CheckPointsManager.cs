@@ -7,9 +7,10 @@ public class CheckPointsManager : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+        if (playerController != null)
         {
-            collision.gameObject.GetComponent<PlayerController>().LastCheckPoint = transform;
+            playerController.LastCheckPoint = transform;
         }
     }
 }

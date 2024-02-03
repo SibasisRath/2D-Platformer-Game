@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] float speed = 4f;
+    [SerializeField] private float speed = 4f;
     private float raycastGroundDistance = 0.2f;
     [SerializeField] private GameObject enemyGroundCheckObject;
     private int bitMask = 1 << 10;
     private bool isMovingRight = true; // Track the direction of movement
+
+
+    private const int flipDegree = 180;
 
     void Update()
     {
@@ -33,7 +36,7 @@ public class EnemyController : MonoBehaviour
         // Flip the enemy sprite horizontally
         if (isMovingRight)
         {   
-            transform.rotation = Quaternion.Euler(transform.rotation.x, 180, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(transform.rotation.x, flipDegree, transform.rotation.z);
         }
         else
         {
@@ -44,11 +47,12 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        PlayerLifeLineManager playerLifeLineManager = collision.gameObject.GetComponent<PlayerLifeLineManager>();
+
+        if (playerLifeLineManager != null)
         {
-           
             Debug.Log("life loss.");
-            collision.gameObject.GetComponent<PlayerLifeLineManager>().UpdateLifeLine();
+            playerLifeLineManager.UpdateLifeLine();
         }
         else
         {

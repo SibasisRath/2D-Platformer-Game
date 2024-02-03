@@ -6,7 +6,6 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     #region Variables
-    private Animator animator;
     [SerializeField] float horizontalInput;
     [SerializeField] float verticalInput;
     [SerializeField] float speed;
@@ -19,12 +18,12 @@ public class PlayerController : MonoBehaviour
 
     private Transform lastCheckPoint;
 
-    // [SerializeField] float crouchSpeed;
-    //[SerializeField] int score = 0;
-    //[SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] float crouchSpeed;
 
-    private Rigidbody2D rb;
-    private BoxCollider2D playerBoxCollider;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private BoxCollider2D playerBoxCollider;
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     private Vector2 originalColliderCenter;
     private Vector2 originalColliderSize;
@@ -45,16 +44,9 @@ public class PlayerController : MonoBehaviour
     #endregion
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-
-        animator = GetComponent<Animator>();
-        playerBoxCollider = GetComponent<BoxCollider2D>();
-
-        originalColliderCenter = playerBoxCollider.offset; //for 3d this property will be coliderObject.center
+        originalColliderCenter = playerBoxCollider.offset; 
         originalColliderSize = playerBoxCollider.size;
-
-
 
         flip = false;
         _isCrouching = false;
@@ -71,8 +63,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        verticalInput = Input.GetAxis("Vertical");
-
         MovementFunc();
 
         Crouch();
@@ -92,40 +82,35 @@ public class PlayerController : MonoBehaviour
         
         for (int i = 0; i < groundColliders.Length; i++)
         {
-            if (groundColliders[i].gameObject != gameObject)
+            _isOnGround = true;
+            if (wasGrounded == false)
             {
-                _isOnGround = true;
-                if (wasGrounded == false)
-                {
-                    SoundManager.Instance.Play(Sounds.PlayerLand);
-                }
+                animator.SetBool("Jump", false);
+                SoundManager.Instance.Play(Sounds.PlayerLand);
             }
         }
 
         if (Physics2D.OverlapCircle(m_CeilingCheck.position, ceilingDistance, m_WhatIsGround))
         {
             _isCelingPresent = true;
-
-            //Debug.Log(Physics2D.OverlapCircle(m_CeilingCheck.position, ceilingDistance, m_WhatIsGround).gameObject.name);
         }
         else
         {
             _isCelingPresent = false;
-        }
-
-      
+        }      
     }
     #endregion
 
     #region Jump function
     void Jump()
     {
+        verticalInput = Input.GetAxis("Vertical");
         if (_isOnGround)
         {
             _canDoubleJump = true;
             if (verticalInput > 0)
             {
-                animator.SetTrigger("Jump");
+                animator.SetBool("Jump", true);
                 SoundManager.Instance.Play(Sounds.PlayerJump);
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             }
@@ -134,7 +119,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_canDoubleJump && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
             {
-                animator.SetTrigger("Jump");
+                animator.SetBool("Jump",true);
                 SoundManager.Instance.Play(Sounds.PlayerJump);
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 _canDoubleJump = false;
@@ -194,18 +179,21 @@ public class PlayerController : MonoBehaviour
                 flip = false;
             }
 
-            /* if (Mathf.Approximately(horizontalInput, 0f))
-             {
-                 flip = false;
-             }*/
-
-            GetComponent<SpriteRenderer>().flipX = flip;
+            spriteRenderer.flipX = flip;
 
 
             Vector3 movement = transform.position;
-            movement.x += speed * horizontalInput * Time.deltaTime;
+            if (_isCrouching)
+            {
+                movement.x += crouchSpeed * horizontalInput * Time.deltaTime;
+            }
+            else
+            {
+                movement.x += speed * horizontalInput * Time.deltaTime;
+                SoundManager.Instance.Play(Sounds.PlayerMove);
+            }
             transform.position = movement;
-            SoundManager.Instance.Play(Sounds.PlayerMove);
+            
         }
     }
     #endregion
@@ -214,8 +202,6 @@ public class PlayerController : MonoBehaviour
     public void PickUpCollectables(int points)
     {
         scoreManager.UpdateScore(points);
-        //score += points;
-        //scoreText.text = "Score: " + score;
     }
 
     #endregion

@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class LevelFinish : MonoBehaviour
 {
-    [SerializeField] GameObject levelCompleteScreen;
-    [SerializeField] string nextLevelName;
+    [SerializeField] private GameObject levelCompleteScreen;
+    [SerializeField] private string nextLevelName;
+    [SerializeField] private GameObject successParticles;
 
     private void Start()
     {
@@ -15,10 +16,12 @@ public class LevelFinish : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player") 
+        PlayerController playerController = collision.GetComponent<PlayerController>();
+        if (playerController != null) 
         {
             levelCompleteScreen.SetActive(true);
-            collision.GetComponent<PlayerController>().enabled = false;
+            playerController.enabled = false;
+            Instantiate(successParticles,gameObject.transform);
             LevelManager.Instance.OnLevelCompletion(nextLevelName);
 
         }
