@@ -23,16 +23,16 @@ public class LevelLoader : MonoBehaviour
     public static void LevelSelector(string level)
     {
 
-        LevelStatus levelStatus = LevelManager.Instance.getLevelStatus(level);
-        switch (levelStatus)
+        LevelStates levelStates = LevelManager.Instance.getLevelStates(level);
+        switch (levelStates)
         {
-            case LevelStatus.Completed:
+            case LevelStates.Completed:
                 
-            case LevelStatus.Unlocked:
+            case LevelStates.Unlocked:
                 SoundManager.Instance.Play(Sounds.ButtonClick);
                 SceneManager.LoadScene(level);
                 break;
-            case LevelStatus.Locked:
+            case LevelStates.Locked:
                 Debug.Log("This is locked.");
                 SoundManager.Instance.Play(Sounds.LevelLocked);
                 break;

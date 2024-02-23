@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     private static LevelManager instance;
+    private const string defaultFirstLevel = "Level1";
 
-   // private Scene[] Levels;
     public static LevelManager Instance { get{ return instance; } }
 
     private void Awake()
@@ -24,26 +24,24 @@ public class LevelManager : MonoBehaviour
     }
     private void Start()
     {
-        setLevelStatus("Level1",LevelStatus.Unlocked);
+        setLevelStates(defaultFirstLevel,LevelStates.Unlocked);
     }
 
     public void OnLevelCompletion(string nextLevelName)
     {
         SoundManager.Instance.Play(Sounds.LevelComplete);
         Scene currentScene = SceneManager.GetActiveScene();
-        setLevelStatus(currentScene.name, LevelStatus.Completed);
-        setLevelStatus(nextLevelName, LevelStatus.Unlocked);
+        setLevelStates(currentScene.name, LevelStates.Completed);
+        setLevelStates(nextLevelName, LevelStates.Unlocked);
 
     }
   
-
-
-    public LevelStatus getLevelStatus(string level) 
+    public LevelStates getLevelStates(string level) 
     {
-        LevelStatus levelStatus = (LevelStatus) PlayerPrefs.GetInt(level, 0);
-        return levelStatus;
+        LevelStates levelStates = (LevelStates) PlayerPrefs.GetInt(level, 0);
+        return levelStates;
     }
-    public void setLevelStatus(string level, LevelStatus levelStatus) 
+    public void setLevelStates(string level, LevelStates levelStates) 
     {
         if (level == "Final")
         {
@@ -51,9 +49,9 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt(level, (int)levelStatus);
+            PlayerPrefs.SetInt(level, (int)levelStates);
             PlayerPrefs.Save();
-            Debug.Log($"level status updated {level}, {levelStatus}");
+            Debug.Log($"level status updated {level}, {levelStates}");
         }
         
     }

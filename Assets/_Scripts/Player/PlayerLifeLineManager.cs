@@ -5,10 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerLifeLineManager : MonoBehaviour
 {
-    [SerializeField] List<GameObject> lifelines;
-    [SerializeField] GameObject gameOverScreen;
+    [SerializeField] private List<GameObject> lifelines;
+    [SerializeField] private GameObject gameOverScreen;
 
-    [SerializeField] ParticleSystem deadParticles;
+    [SerializeField] private ParticleSystem deadParticles;
+
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private Animator animator;
 
     private void Start()
     {
@@ -20,14 +23,16 @@ public class PlayerLifeLineManager : MonoBehaviour
         SoundManager.Instance.Play(Sounds.PlayerHurt);
         Destroy(lifelines[lifelines.Count - 1]);
         lifelines.RemoveAt(lifelines.Count - 1);
-        transform.position = GetComponent<PlayerController>().LastCheckPoint.position;
+        transform.position = playerController.LastCheckPoint.position;
+        animator.SetTrigger("Hurt");
 
         if (lifelines.Count <= 0)
         {
             SoundManager.Instance.Play(Sounds.PlayerDead);
             deadParticles.Play();
+            animator.SetTrigger("Death");
             gameOverScreen.SetActive(true);
-            transform.GetComponent<PlayerController>().enabled = false;
+            playerController.enabled = false;
         }
 
        

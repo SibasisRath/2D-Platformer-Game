@@ -5048,7 +5048,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalInput: 0
   verticalInput: 0
-  speed: 4
+  speed: 6
   jumpForce: 10
   scoreManager: {fileID: 0}
   m_WhatIsGround:
@@ -5056,6 +5056,11 @@ MonoBehaviour:
     m_Bits: 1591
   m_GroundCheck: {fileID: 1902352814}
   m_CeilingCheck: {fileID: 761082947}
+  crouchSpeed: 3
+  rb: {fileID: 8480934435922548621}
+  playerBoxCollider: {fileID: 8132209570566060774}
+  animator: {fileID: 8480934436712519432}
+  spriteRenderer: {fileID: 8480934436712519433}
   _canDoubleJump: 0
   _isOnGround: 0
   _isCelingPresent: 0
@@ -5077,6 +5082,8 @@ MonoBehaviour:
   - {fileID: 0}
   gameOverScreen: {fileID: 0}
   deadParticles: {fileID: 1959723455}
+  playerController: {fileID: 8480934435922548630}
+  animator: {fileID: 8480934436712519432}
 --- !u!1001 &8480934436476433958
 PrefabInstance:
   m_ObjectHideFlags: 0
