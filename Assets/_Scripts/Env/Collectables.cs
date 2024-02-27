@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
 public class Collectables : MonoBehaviour
 {
     [SerializeField] private int value = 0;
-    [SerializeField] private bool _isCaptured = false;
+    [SerializeField] private bool isCaptured = false;
 
     [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] private Animator animator;
@@ -28,19 +26,22 @@ public class Collectables : MonoBehaviour
         PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
         if (playerController != null )
         {
-            Debug.Log($"Player collected {gameObject.name}");
             SoundManager.Instance.Play(Sounds.Collection);
             playerController.PickUpCollectables(value);
-            _isCaptured = true;
+
+            isCaptured = true;
             boxCollider.enabled = false;
-            animator.SetBool("Captured", _isCaptured);
+
+            animator.SetBool("Captured", isCaptured);
+
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, transform.position.y + collectableVerticalDisplacement, transform.position.z), animationSpeed * Time.deltaTime);
-            Invoke("disablingGameObject", gameObjectDisablingTime);
+
+            Invoke(nameof(disablingGameObject), gameObjectDisablingTime);
             
         }
     }
 
-    void disablingGameObject()
+    private void disablingGameObject()
     {
         gameObject.SetActive(false);
     }

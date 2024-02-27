@@ -1,24 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     #region Variables
-    [SerializeField] float horizontalInput;
-    [SerializeField] float verticalInput;
-    [SerializeField] float speed;
-    [SerializeField] int jumpForce;
-    [SerializeField] PlayerScoreManager scoreManager;
+    [SerializeField] private float horizontalInput;
+    [SerializeField] private float verticalInput;
+    [SerializeField] private float speed;
+    [SerializeField] private int jumpForce;
+    [SerializeField] private PlayerScoreManager scoreManager;
 
-    [SerializeField] private LayerMask m_WhatIsGround;       // A mask determining what is ground to the character
-    [SerializeField] private Transform m_GroundCheck;        // A position marking where to check if the player is grounded.
-    [SerializeField] private Transform m_CeilingCheck;		// A position marking where to check for ceilings
+    [SerializeField] private LayerMask whatIsGround;       // A mask determining what is ground to the character
+    [SerializeField] private Transform groundCheck;        // A position marking where to check if the player is grounded.
+    [SerializeField] private Transform ceilingCheck;		// A position marking where to check for ceilings
 
     private Transform lastCheckPoint;
 
-    [SerializeField] float crouchSpeed;
+    [SerializeField] private float crouchSpeed;
 
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private BoxCollider2D playerBoxCollider;
@@ -28,18 +25,18 @@ public class PlayerController : MonoBehaviour
     private Vector2 originalColliderCenter;
     private Vector2 originalColliderSize;
 
-    bool flip;
-    bool _isCrouching;
+    private bool flip;
+    private bool isCrouching;
 
-    [SerializeField] bool _canDoubleJump;
+    [SerializeField] private bool canDoubleJump;
 
-    [SerializeField] private bool _isOnGround;
-    [SerializeField] private bool _isCelingPresent;
+    [SerializeField] private bool isOnGround;
+    [SerializeField] private bool isCelingPresent;
 
-    
+    private const float groundDistance = 0.2f;
+    private const float ceilingDistance = 0.2f;
 
     public Transform LastCheckPoint { get => lastCheckPoint; set => lastCheckPoint = value; }
-
 
     #endregion
     private void Start()
@@ -49,40 +46,36 @@ public class PlayerController : MonoBehaviour
         originalColliderSize = playerBoxCollider.size;
 
         flip = false;
-        _isCrouching = false;
-        _isOnGround = false;
+        isCrouching = false;
+        isOnGround = false;
        
-        _canDoubleJump = false;
+        canDoubleJump = false;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         GroundAndCelingCheck();
-        
-    }
-
-    void Update()
-    {
-        MovementFunc();
-
-        Crouch();
-
         Jump();
     }
 
-    #region Ground and Celing Check
-    void GroundAndCelingCheck()
+    private void Update()
     {
-        bool wasGrounded = _isOnGround;
-        _isOnGround = false;
+        verticalInput = Input.GetAxis("Vertical");
 
-        float groundDistance = 0.2f;
-        float ceilingDistance = 0.2f;
-        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, groundDistance, m_WhatIsGround);
-        
+        MovementFunc();
+
+        Crouch();       
+    }
+
+    #region Ground and Celing Check
+    private void GroundAndCelingCheck()
+    {
+        bool wasGrounded = isOnGround;
+        isOnGround = false;
+        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(groundCheck.position, groundDistance, whatIsGround);
         for (int i = 0; i < groundColliders.Length; i++)
         {
-            _isOnGround = true;
+            isOnGround = true;
             if (wasGrounded == false)
             {
                 animator.SetBool("Jump", false);
@@ -90,24 +83,23 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Physics2D.OverlapCircle(m_CeilingCheck.position, ceilingDistance, m_WhatIsGround))
+        if (Physics2D.OverlapCircle(ceilingCheck.position, ceilingDistance, whatIsGround))
         {
-            _isCelingPresent = true;
+            isCelingPresent = true;
         }
         else
         {
-            _isCelingPresent = false;
+            isCelingPresent = false;
         }      
     }
     #endregion
 
     #region Jump function
-    void Jump()
+    private void Jump()
     {
-        verticalInput = Input.GetAxis("Vertical");
-        if (_isOnGround)
+        if (isOnGround)
         {
-            _canDoubleJump = true;
+            canDoubleJump = true;
             if (verticalInput > 0)
             {
                 animator.SetBool("Jump", true);
@@ -117,42 +109,42 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (_canDoubleJump && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
+            if (canDoubleJump && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
             {
                 animator.SetBool("Jump",true);
                 SoundManager.Instance.Play(Sounds.PlayerJump);
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                _canDoubleJump = false;
+                canDoubleJump = false;
             }
         }
     }
 
     #endregion
    
-
-
     #region Crouch Function
-    void Crouch()
+    private void Crouch()
     {
+        float gettingHalf = 2f;
+
         if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
         {
-            if (!_isCrouching)
+            if (!isCrouching)
             {
-                _isCrouching = true;
+                isCrouching = true;
                 animator.SetBool("Crouch", true);
 
                 //changing size ad position of player's colider
-                playerBoxCollider.offset = new Vector2(playerBoxCollider.offset.x, playerBoxCollider.offset.y / 2f);
-                playerBoxCollider.size = new Vector2(playerBoxCollider.size.x, playerBoxCollider.size.y / 2f);
+                playerBoxCollider.offset = new Vector2(playerBoxCollider.offset.x, playerBoxCollider.offset.y / gettingHalf);
+                playerBoxCollider.size = new Vector2(playerBoxCollider.size.x, playerBoxCollider.size.y / gettingHalf);
             }
         }
-        else if (_isCrouching && _isCelingPresent)
+        else if (isCrouching && isCelingPresent)
         {
             animator.SetBool("Crouch", true);
         }
         else
         {
-            _isCrouching = false;
+            isCrouching = false;
             animator.SetBool("Crouch", false);
             // Restore the original collider size and position when standing up
             playerBoxCollider.offset = originalColliderCenter;
@@ -163,7 +155,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Movement Fuction
-    void MovementFunc()
+    private void MovementFunc()
     {
         animator.SetFloat("Run", Mathf.Abs(horizontalInput));
 
@@ -183,7 +175,7 @@ public class PlayerController : MonoBehaviour
 
 
             Vector3 movement = transform.position;
-            if (_isCrouching)
+            if (isCrouching)
             {
                 movement.x += crouchSpeed * horizontalInput * Time.deltaTime;
             }

@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.Audio;
 
 public class SoundManager : MonoBehaviour
 {
@@ -13,10 +10,10 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -40,20 +37,16 @@ public class SoundManager : MonoBehaviour
     {
         Play(Sounds.ConstantBackGround);
     }
-    public void Play(Sounds sName)
+    public void Play(Sounds sName) //it is an enum.
     {
         SoundType s = Array.Find(soundtypes, sound => sound.name == sName);
         if (s == null)
         {
-            Debug.Log("Sound clip is not available: " + sName);
             return;
         }
         if (!s.audioSource.isPlaying)
         {
             s.audioSource.Play();
         }
-        
-
     }
-
 }

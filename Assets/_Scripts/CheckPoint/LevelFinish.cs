@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LevelFinish : MonoBehaviour
 {
     [SerializeField] private GameObject levelCompleteScreen;
-    [SerializeField] private string nextLevelName;
+    [SerializeField] private AllLevels nextLevelName;
     [SerializeField] private GameObject successParticles;
 
     private void Start()

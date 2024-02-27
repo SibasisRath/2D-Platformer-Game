@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class RestartGame : MonoBehaviour
 {
-    [SerializeField] private Button button;
+    [SerializeField] private Button mainButton;
     private void Start()
     {
-        button.onClick.AddListener(() => {
+        mainButton.onClick.AddListener(() => {
             SoundManager.Instance.Play(Sounds.ButtonClick);
             SceneManager.LoadScene(0); });
     }

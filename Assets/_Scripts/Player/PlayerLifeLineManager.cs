@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerLifeLineManager : MonoBehaviour
 {
@@ -21,7 +19,7 @@ public class PlayerLifeLineManager : MonoBehaviour
     public void UpdateLifeLine()
     {
         SoundManager.Instance.Play(Sounds.PlayerHurt);
-        Destroy(lifelines[lifelines.Count - 1]);
+        Destroy(lifelines[lifelines.Count - 1]); //accessing the last number in the list and deleting it.
         lifelines.RemoveAt(lifelines.Count - 1);
         transform.position = playerController.LastCheckPoint.position;
         animator.SetTrigger("Hurt");
@@ -34,8 +32,5 @@ public class PlayerLifeLineManager : MonoBehaviour
             gameOverScreen.SetActive(true);
             playerController.enabled = false;
         }
-
-       
     }
-
 }
