@@ -6,7 +6,9 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     private static LevelManager instance;
-    private const string defaultFirstLevel = "Level1";
+    private const AllLevels defaultFirstLevel = AllLevels.Level1;
+    private const AllLevels defaultLobbyLevel = AllLevels.Lobby;
+    private const AllLevels defaultFinalLevel = AllLevels.Final;
 
     public static LevelManager Instance { get{ return instance; } }
 
@@ -24,35 +26,28 @@ public class LevelManager : MonoBehaviour
     }
     private void Start()
     {
-        setLevelStates(defaultFirstLevel,LevelStates.Unlocked);
+        SetLevelStates(defaultLobbyLevel, LevelStates.Unlocked);
+        SetLevelStates(defaultFirstLevel,LevelStates.Unlocked);
+        SetLevelStates(defaultFinalLevel, LevelStates.Unlocked);
     }
 
-    public void OnLevelCompletion(string nextLevelName)
+    public void OnLevelCompletion(AllLevels nextLevelName)
     {
         SoundManager.Instance.Play(Sounds.LevelComplete);
-        Scene currentScene = SceneManager.GetActiveScene();
-        setLevelStates(currentScene.name, LevelStates.Completed);
-        setLevelStates(nextLevelName, LevelStates.Unlocked);
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SetLevelStates((AllLevels)currentSceneIndex, LevelStates.Completed);
+        SetLevelStates(nextLevelName, LevelStates.Unlocked);
 
     }
   
-    public LevelStates getLevelStates(string level) 
+    public LevelStates GetLevelStates(AllLevels level) 
     {
-        LevelStates levelStates = (LevelStates) PlayerPrefs.GetInt(level, 0);
+        LevelStates levelStates = (LevelStates) PlayerPrefs.GetInt(level.ToString(), 0);
         return levelStates;
     }
-    public void setLevelStates(string level, LevelStates levelStates) 
+    public void SetLevelStates(AllLevels level, LevelStates levelStates) 
     {
-        if (level == "Final")
-        {
-            Debug.Log("Game ended.");
-        }
-        else
-        {
-            PlayerPrefs.SetInt(level, (int)levelStates);
-            PlayerPrefs.Save();
-            Debug.Log($"level status updated {level}, {levelStates}");
-        }
-        
+        PlayerPrefs.SetInt(level.ToString(), (int)levelStates);
+        PlayerPrefs.Save();
     }
 }

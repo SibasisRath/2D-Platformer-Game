@@ -1065,7 +1065,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelCompleteScreen: {fileID: 288123869}
-  nextLevelName: Level2
+  nextLevelName: 2
   successParticles: {fileID: 1664836844622050, guid: 4e65bc2c7509a774da9a6054762cd392,
     type: 3}
 --- !u!1 &583992001

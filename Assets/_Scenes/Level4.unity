@@ -1354,7 +1354,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ebbdc4207575c94e9f5e7580f0df8a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
 --- !u!114 &428549195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3012,7 +3011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelCompleteScreen: {fileID: 1427733182}
-  nextLevelName: Level5
+  nextLevelName: 5
   successParticles: {fileID: 1664836844622050, guid: 4e65bc2c7509a774da9a6054762cd392,
     type: 3}
 --- !u!61 &963926730

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -7,7 +5,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float speed = 4f;
     private float raycastGroundDistance = 0.2f;
     [SerializeField] private GameObject enemyGroundCheckObject;
-    private int bitMask = 1 << 10;
+    [SerializeField] private LayerMask groundLayer;
     private bool isMovingRight = true; // Track the direction of movement
 
 
@@ -16,7 +14,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         // Cast a ray downwards to check for ground
-        RaycastHit2D groundHit = Physics2D.Raycast(enemyGroundCheckObject.transform.position, Vector2.down, raycastGroundDistance, bitMask);
+        RaycastHit2D groundHit = Physics2D.Raycast(enemyGroundCheckObject.transform.position, Vector2.down, raycastGroundDistance, groundLayer);
 
         // Move the enemy horizontally
         Vector3 movement = transform.position;
@@ -51,7 +49,6 @@ public class EnemyController : MonoBehaviour
 
         if (playerLifeLineManager != null)
         {
-            Debug.Log("life loss.");
             playerLifeLineManager.UpdateLifeLine();
         }
         else

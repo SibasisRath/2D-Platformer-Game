@@ -180,6 +180,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   enemyGroundCheckObject: {fileID: 1334152842}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!50 &853031704
 Rigidbody2D:
   serializedVersion: 4

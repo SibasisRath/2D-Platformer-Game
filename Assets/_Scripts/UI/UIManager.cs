@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -11,6 +9,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button restartButton;
     [SerializeField] private Button nextLevelBackToMainButton;
     [SerializeField] private Button restartBackToMainButton;
+    private int currentSceneIndex;
     private void Start()
     {
         SetUpButton(nextLevelButton, NextLevelButtonClicked);
@@ -18,6 +17,7 @@ public class UIManager : MonoBehaviour
         SetUpButton(nextLevelBackToMainButton, BackToMainButtonClicked);
         SetUpButton(restartBackToMainButton, BackToMainButtonClicked);
 
+        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     private void SetUpButton(Button button, UnityAction unityAction)
@@ -29,25 +29,21 @@ public class UIManager : MonoBehaviour
                 unityAction?.Invoke();
             });
         }
-        else
-        {
-            Debug.Log($"{button} is null.");
-        }
     }
 
     private void NextLevelButtonClicked()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        LevelLoader.LevelSelector((AllLevels)(currentSceneIndex+1));
     }
 
     private void RestartButtonClicked()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        LevelLoader.LevelSelector((AllLevels)currentSceneIndex);
     }
 
     private void BackToMainButtonClicked()
     {
-        SceneManager.LoadScene("Lobby");
+        LevelLoader.LevelSelector(AllLevels.Lobby);
     }
    
 }

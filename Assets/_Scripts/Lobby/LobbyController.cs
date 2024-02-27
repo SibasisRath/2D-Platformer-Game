@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System;
 
 [RequireComponent(typeof(Button))]
 public class LobbyController : MonoBehaviour
@@ -25,7 +24,8 @@ public class LobbyController : MonoBehaviour
         for (int i = 0; i < levelButtons.Length; i++)
         {
             int index = i;
-            SetupButton(levelButtons[i], () => LevelButtonClick(levelButtons[index].gameObject.name));
+            AllLevels status = (AllLevels)Enum.Parse(typeof(AllLevels), levelButtons[index].gameObject.name);
+            SetupButton(levelButtons[i], () => LevelButtonClick(status));
         }
     }
 
@@ -38,16 +38,13 @@ public class LobbyController : MonoBehaviour
                 action?.Invoke();
             });
         }
-        else
-        {
-            Debug.LogWarning("Button is null. Cannot setup click listener.");
-        }
     }
 
     private void QuitButtonClick()
     {
         SoundManager.Instance.Play(Sounds.ButtonClick);
         Application.Quit();
+   
     }
 
     private void PlayButtonClick()
@@ -62,7 +59,7 @@ public class LobbyController : MonoBehaviour
         levelSelection.SetActive(false);
     }
 
-    private void LevelButtonClick(string levelName)
+    private void LevelButtonClick(AllLevels levelName)
     {
         LevelLoader.LevelSelector(levelName);
     }
